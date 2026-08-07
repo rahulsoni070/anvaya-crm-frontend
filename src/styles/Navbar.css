@@ -1,0 +1,21 @@
+.navbar {
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 23px;
+
+    background-color: #1f2937;
+    color: white;
+}
+
+.navbar h2 {
+    margin: 0;
+}
+
+.navbar button {
+    padding: 8px 14px;
+    cursor: pointer;
+}

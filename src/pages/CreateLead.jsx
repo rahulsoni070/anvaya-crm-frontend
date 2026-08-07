@@ -1,0 +1,187 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import api from "../utils/api";
+import { useNavigate } from "react-router-dom";
+
+function CreateLead() {
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
+        setFormData({
+            ...formData,
+            [name]: value
+        })
+    }
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        status: "New",
+        priority: "Medium",
+        salesAgent: "",
+        source: ""
+    })
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            const token = localStorage.getItem("token")
+
+            await api.post(
+                "/api/leads",
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            navigate("/leads")
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const navigate = useNavigate()
+    const [salesAgents, setSalesAgents] = useState([])
+
+    useEffect(() => {
+
+        async function fetchSalesAgents() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await api.get(
+                    "/api/agents",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                setSalesAgents(response.data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchSalesAgents();
+
+    }, []);
+
+
+    return (
+        <>
+            <h1>Create Lead</h1>
+            
+            <form onSubmit={handleSubmit}>
+                <div>
+                <label>Name: </label>
+                <input
+                 type="text"
+                 name="name"
+                 value={formData.name}
+                 onChange={handleChange}
+                 required
+                />
+                </div>
+
+                <div>
+                <label>Email: </label>
+                <input 
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                />
+                </div>
+
+                <div>
+                <label>Phone: </label>
+                <input 
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required />
+                </div>
+                <div>
+                <label>Status: </label>
+    <select
+        name="status"
+        value={formData.status}
+        onChange={handleChange}
+        required
+    >
+        <option value="New">New</option>
+        <option value="Contacted">Contacted</option>
+        <option value="Qualified">Qualified</option>
+        <option value="Proposal Sent">Proposal Sent</option>
+        <option value="Closed">Closed</option>
+    </select>
+    </div>
+
+    <div>
+    <label>Priority: </label>
+    <select
+        name="priority"
+        value={formData.priority}
+        onChange={handleChange}
+    >
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+    </select>
+    </div>
+    <div>
+    <label>Sales Agent</label>
+
+<select
+    name="salesAgent"
+    value={formData.salesAgent}
+    onChange={handleChange}
+    required
+>
+    <option value="">Select Sales Agent</option>
+
+    {salesAgents.map((agent) => (
+        <option key={agent._id} value={agent._id}>
+            {agent.name} - {agent.email}
+        </option>
+    ))}
+</select>
+</div>
+
+
+<div>
+    <label>Source: </label>
+    <select
+        name="source"
+        value={formData.source}
+        onChange={handleChange}
+        required
+    >
+        <option value="">Select Source</option>
+        <option value="Website">Website</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Instagram">Instagram</option>
+        <option value="Referral">Referral</option>
+    </select>
+    </div>
+
+    <button type="submit" >
+                Create Lead
+            </button>
+            </form>
+            
+        </>
+    )
+}
+
+export default CreateLead
