@@ -1,0 +1,31 @@
+.reports-page {
+    padding: 24px;
+}
+
+.reports-page h1 {
+    margin-bottom: 20px;
+}
+
+.report-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.report-card h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.reports-error {
+    color: #dc2626;
+    padding: 24px;
+}
+
+.reports-loading {
+    padding: 24px;
+    color: #6b7280;
+}

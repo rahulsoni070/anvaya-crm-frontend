@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import api from "../utils/api";
 import "../styles/Dashboard.css";
 
@@ -33,7 +32,7 @@ function Dashboard() {
 
     if (!dashboardData) {
         return (
-            <div className="dashboard-page">
+            <div className="page dashboard-loading">
                 <h2>Loading...</h2>
             </div>
         );

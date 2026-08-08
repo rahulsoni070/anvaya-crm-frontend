@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../utils/api";
 
 function SalesAgents() {
@@ -10,14 +9,11 @@ function SalesAgents() {
             try {
                 const token = localStorage.getItem("token");
 
-                const response = await api.get(
-                    "/api/agents",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
+                const response = await api.get("/api/agents", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
-                );
+                });
 
                 setAgents(response.data);
             } catch (error) {
@@ -46,9 +42,7 @@ function SalesAgents() {
                         <tr key={agent._id}>
                             <td>{agent.name}</td>
                             <td>{agent.email}</td>
-                            <td>
-                                {agent.assignedLeads}
-                            </td>
+                            <td>{agent.assignedLeads}</td>
                         </tr>
                     ))}
                 </tbody>

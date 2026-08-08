@@ -24,17 +24,6 @@ function Sidebar({ isSidebarOpen }) {
         Leads
     </NavLink>
 
-    {role === "admin" && (
-        <NavLink
-            to="/users"
-            className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
-            }
-        >
-            Users
-        </NavLink>
-    )}
-
     <NavLink
         to="/sales-agents"
         className={({ isActive }) =>
@@ -42,6 +31,24 @@ function Sidebar({ isSidebarOpen }) {
         }
     >
         Sales Agents
+    </NavLink>
+
+    <NavLink
+        to="/reports"
+        className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+        }
+    >
+        Reports
+    </NavLink>
+
+    <NavLink
+        to="/settings"
+        className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+        }
+    >
+        Settings
     </NavLink>
 
 </aside>

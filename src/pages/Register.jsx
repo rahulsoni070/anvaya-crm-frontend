@@ -3,39 +3,39 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../utils/api";
 import "../styles/Login.css";
 
-function Login() {
+function Register() {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [role, setRole] = useState("salesAgent");
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
-    const loginUser = async (event) => {
+    const registerUser = async (event) => {
         event.preventDefault();
 
         try {
             setError("");
 
-            const response = await api.post(
-                "/auth/login",
+            await api.post(
+                "/auth/register",
                 {
+                    name,
                     email,
-                    password
+                    password,
+                    role
                 }
             );
 
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("role", response.data.user.role);
-            localStorage.setItem("user", JSON.stringify(response.data.user));
-
-            navigate("/dashboard", { replace: true });
+            navigate("/login", { replace: true });
 
         } catch (error) {
             console.error(error);
 
             setError(
                 error.response?.data?.message ||
-                "Login failed. Please try again."
+                "Registration failed. Please try again."
             );
         }
     };
@@ -47,10 +47,25 @@ function Login() {
 
                 <div className="login-header">
                     <h1>Anvaya CRM</h1>
-                    <p>Sign in to continue to your account</p>
+                    <p>Create an account to get started</p>
                 </div>
 
-                <form onSubmit={loginUser}>
+                <form onSubmit={registerUser}>
+
+                    <div className="form-group">
+                        <label htmlFor="name">Name</label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Enter your name"
+                            value={name}
+                            onChange={(event) =>
+                                setName(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
 
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -73,13 +88,28 @@ function Login() {
                         <input
                             type="password"
                             id="password"
-                            placeholder="Enter your password"
+                            placeholder="Create a password"
                             value={password}
                             onChange={(event) =>
                                 setPassword(event.target.value)
                             }
                             required
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="role">Register as</label>
+
+                        <select
+                            id="role"
+                            value={role}
+                            onChange={(event) =>
+                                setRole(event.target.value)
+                            }
+                        >
+                            <option value="salesAgent">Sales Agent</option>
+                            <option value="admin">Admin</option>
+                        </select>
                     </div>
 
                     {error && (
@@ -92,13 +122,13 @@ function Login() {
                         type="submit"
                         className="login-button"
                     >
-                        Login
+                        Create Account
                     </button>
 
                 </form>
 
                 <p className="login-footer-link">
-                    Don't have an account? <Link to="/register">Register</Link>
+                    Already have an account? <Link to="/login">Login</Link>
                 </p>
 
             </div>
@@ -107,4 +137,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;

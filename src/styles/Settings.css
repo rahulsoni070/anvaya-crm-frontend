@@ -1,0 +1,42 @@
+.settings-page {
+    padding: 24px;
+}
+
+.settings-page h1 {
+    margin-bottom: 20px;
+}
+
+.settings-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 480px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.settings-card h2 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: #374151;
+}
+
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.settings-row:last-child {
+    border-bottom: none;
+}
+
+.settings-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.settings-loading {
+    padding: 24px;
+    color: #6b7280;
+}

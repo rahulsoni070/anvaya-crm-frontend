@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute"
 import Login from "./pages/Login"
+import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import Layout from "./components/Layout";
 import Leads from "./pages/Leads";
@@ -8,9 +9,8 @@ import SalesAgents from "./pages/SalesAgents";
 import CreateLead from "./pages/CreateLead"
 import LeadDetails from "./pages/LeadDetails";
 import EditLead from "./pages/EditLead";
-import CreateUser from "./pages/CreateUser"
-import Users from "./pages/Users"
-import AdminRoute from "./components/AdminRoute";
+import Reports from "./pages/Reports"
+import Settings from "./pages/Settings"
 
 function App() {
   return (
@@ -22,13 +22,15 @@ function App() {
 
           <Route path="/login" element={<Login/>} />
 
+          <Route path="/register" element={<Register/>} />
+
           <Route element={<ProtectedRoute><Layout/></ProtectedRoute>}  >
           
           <Route path="/dashboard" element={<Dashboard/>} />
 
           <Route path="/leads" element={<Leads/>} />
 
-          <Route path="/leads/new" element={<CreateUser/>} />
+          <Route path="/leads/new" element={<CreateLead/>} />
 
           <Route path="leads/:id" element={<LeadDetails/>}/>
 
@@ -38,9 +40,9 @@ function App() {
           <Route path="/leads/:id/edit"
           element={<EditLead/>} />
 
-          <Route path="/users" element={<AdminRoute><Users/></AdminRoute>}/>
-          <Route path="/users/new" element={<AdminRoute><CreateUser/></AdminRoute>} />
-          
+          <Route path="/reports" element={<Reports/>} />
+
+          <Route path="/settings" element={<Settings/>} />
 
           </Route>
 
