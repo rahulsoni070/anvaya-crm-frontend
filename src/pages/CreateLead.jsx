@@ -17,20 +17,53 @@ function CreateLead() {
         priority: "Medium",
         salesAgent: "",
         source: "",
-        tags: "",
         timeToClose: ""
     });
 
     const [error, setError] = useState("");
     const [salesAgents, setSalesAgents] = useState([]);
+    const [availableTags, setAvailableTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [newTagInput, setNewTagInput] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
+
+        if (name === "phone") {
+            const digitsOnly = value.replace(/\D/g, "");
+            setFormData({
+                ...formData,
+                phone: digitsOnly
+            });
+            return;
+        }
 
         setFormData({
             ...formData,
             [name]: value
         });
+    };
+
+    const toggleTag = (tag) => {
+        setSelectedTags((prev) =>
+            prev.includes(tag)
+                ? prev.filter((t) => t !== tag)
+                : [...prev, tag]
+        );
+    };
+
+    const handleAddNewTag = () => {
+        const trimmed = newTagInput.trim();
+
+        if (trimmed && !selectedTags.includes(trimmed)) {
+            setSelectedTags([...selectedTags, trimmed]);
+        }
+
+        if (trimmed && !availableTags.includes(trimmed)) {
+            setAvailableTags([...availableTags, trimmed]);
+        }
+
+        setNewTagInput("");
     };
 
     const handleSubmit = async (event) => {
@@ -53,10 +86,7 @@ function CreateLead() {
 
             const payload = {
                 ...formData,
-                tags: formData.tags
-                    .split(",")
-                    .map((tag) => tag.trim())
-                    .filter(Boolean),
+                tags: selectedTags,
                 timeToClose: formData.timeToClose
                     ? Number(formData.timeToClose)
                     : undefined
@@ -104,6 +134,30 @@ function CreateLead() {
         }
 
         fetchSalesAgents();
+    }, []);
+
+    useEffect(() => {
+        async function fetchTags() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await api.get(
+                    "/api/leads/tags/all",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                setAvailableTags(response.data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchTags();
     }, []);
 
     return (
@@ -222,13 +276,31 @@ function CreateLead() {
                     <div className="form-row">
                         <div className="form-group">
                             <label>Tags</label>
-                            <input
-                                type="text"
-                                name="tags"
-                                value={formData.tags}
-                                onChange={handleChange}
-                                placeholder="e.g. High Value, Follow-up"
-                            />
+
+                            <div className="tag-options">
+                                {availableTags.map((tag) => (
+                                    <label key={tag} className="tag-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTags.includes(tag)}
+                                            onChange={() => toggleTag(tag)}
+                                        />
+                                        {tag}
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="tag-add-new">
+                                <input
+                                    type="text"
+                                    value={newTagInput}
+                                    onChange={(e) => setNewTagInput(e.target.value)}
+                                    placeholder="Add a new tag"
+                                />
+                                <button type="button" onClick={handleAddNewTag}>
+                                    Add
+                                </button>
+                            </div>
                         </div>
 
                         <div className="form-group">

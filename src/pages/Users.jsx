@@ -1,69 +1,33 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../utils/api";
+const mongoose = require("mongoose");
 
-function Users() {
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+    },
+    password: {
+        type: String,
+        required: function () {
+            return this.role !== "salesAgent";
+        },
+    },
+    role: {
+        type: String,
+        enum: ["admin", "salesAgent"],
+        default: "salesAgent"
+    }
+},
 
-    const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-
-        async function fetchUsers() {
-            try {
-                const token = localStorage.getItem("token");
-
-                const response = await api.get(
-                    "/auth/users",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
-
-                setUsers(response.data);
-
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        fetchUsers();
-
-    }, []);
-
-    return (
-        <div className="page" >
-
-            <h1>Users</h1>
-
-            <button onClick={() => navigate("/users/new")}>
-                + Create User
-            </button>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {users.map((user) => (
-                        <tr key={user._id}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.role}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-        </div>
-    );
+{
+    timestamps: true
 }
+)
 
-export default Users;
+module.exports = mongoose.model("User", userSchema);

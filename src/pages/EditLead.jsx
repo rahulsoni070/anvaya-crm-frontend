@@ -3,11 +3,23 @@ import { useEffect, useState } from "react";
 import api from "../utils/api";
 import "../styles/Createlead.css";
 
+const PHONE_REGEX = /^[0-9]{10}$/;
+
 function EditLead() {
     const [salesAgents, setSalesAgents] = useState([]);
+    const [error, setError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
+
+        if (name === "phone") {
+            const digitsOnly = value.replace(/\D/g, "");
+            setFormData({
+                ...formData,
+                phone: digitsOnly
+            });
+            return;
+        }
 
         setFormData({
             ...formData,
@@ -89,6 +101,13 @@ function EditLead() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setError("");
+
+        if (!PHONE_REGEX.test(formData.phone.trim())) {
+            setError("Phone number must be exactly 10 digits.");
+            return;
+        }
+
         try {
             const token = localStorage.getItem("token");
 
@@ -106,6 +125,10 @@ function EditLead() {
 
         } catch (error) {
             console.error(error);
+            setError(
+                error.response?.data?.message ||
+                "Failed to update lead. Please try again."
+            );
         }
     };
 
@@ -150,6 +173,7 @@ function EditLead() {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
+                            placeholder="10-digit phone number"
                             required
                         />
                     </div>
@@ -222,6 +246,10 @@ function EditLead() {
                             <option value="Referral">Referral</option>
                         </select>
                     </div>
+
+                    {error && (
+                        <p className="create-lead-error">{error}</p>
+                    )}
 
                     <button type="submit" className="create-lead-button">
                         Update Lead

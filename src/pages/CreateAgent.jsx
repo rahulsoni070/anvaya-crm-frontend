@@ -1,29 +1,40 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
-import "../styles/Login.css";
+import "../styles/Createlead.css";
+
+const NAME_REGEX = /^[A-Za-z\s]{2,50}$/;
 
 function CreateAgent() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: "",
-        email: "",
-        password: ""
+        email: ""
     });
-    const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+    const [error, setError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        try {
-            setError("");
+        setError("");
 
+        if (!NAME_REGEX.test(formData.name.trim())) {
+            setError("Name must be 2-50 letters (no numbers or symbols).");
+            return;
+        }
+
+        try {
             const token = localStorage.getItem("token");
 
             await api.post(
@@ -37,7 +48,6 @@ function CreateAgent() {
             );
 
             navigate("/sales-agents");
-
         } catch (err) {
             console.error(err);
             setError(
@@ -48,67 +58,47 @@ function CreateAgent() {
     };
 
     return (
-        <div className="login-page">
+        <div className="create-lead-page">
 
-            <div className="login-card">
+            <div className="create-lead-card">
 
-                <div className="login-header">
-                    <h1>New Sales Agent</h1>
-                    <p>Add a sales agent to Anvaya CRM</p>
+                <div className="create-lead-header">
+                    <h1>Add Sales Agent</h1>
+                    <p>Create a new sales agent</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
 
                     <div className="form-group">
-                        <label htmlFor="name">Name</label>
-
+                        <label>Name</label>
                         <input
                             type="text"
-                            id="name"
                             name="name"
-                            placeholder="Enter agent name"
                             value={formData.name}
                             onChange={handleChange}
+                            placeholder="Enter agent name"
                             required
-                            minLength={2}
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
-
+                        <label>Email</label>
                         <input
                             type="email"
-                            id="email"
                             name="email"
-                            placeholder="Enter email address"
                             value={formData.email}
                             onChange={handleChange}
+                            placeholder="Enter email address"
                             required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Set a password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            minLength={6}
                         />
                     </div>
 
                     {error && (
-                        <p className="login-error">{error}</p>
+                        <p className="create-lead-error">{error}</p>
                     )}
 
-                    <button type="submit" className="login-button">
-                        Create Sales Agent
+                    <button type="submit" className="create-lead-button">
+                        Create Agent
                     </button>
 
                 </form>
