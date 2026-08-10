@@ -1,14 +1,17 @@
 .settings-page {
     padding: 24px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
 }
 
-.settings-page h1 {
-    margin-bottom: 20px;
+.settings-wrapper {
     width: 100%;
     max-width: 480px;
+    text-align: center;
+}
+
+.settings-wrapper h1 {
+    margin-bottom: 20px;
 }
 
 .settings-card {
@@ -16,8 +19,8 @@
     border-radius: 8px;
     padding: 24px;
     width: 100%;
-    max-width: 480px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
 .settings-card h2 {

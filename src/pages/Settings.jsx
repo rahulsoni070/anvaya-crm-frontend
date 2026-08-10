@@ -17,24 +17,26 @@ function Settings() {
 
     return (
         <div className="settings-page">
-            <h1>Settings</h1>
+            <div className="settings-wrapper">
+                <h1>Settings</h1>
 
-            <div className="settings-card">
-                <h2>Account Details</h2>
+                <div className="settings-card">
+                    <h2>Account Details</h2>
 
-                <div className="settings-row">
-                    <span className="settings-label">Name</span>
-                    <span>{user.name}</span>
-                </div>
+                    <div className="settings-row">
+                        <span className="settings-label">Name</span>
+                        <span>{user.name}</span>
+                    </div>
 
-                <div className="settings-row">
-                    <span className="settings-label">Email</span>
-                    <span>{user.email}</span>
-                </div>
+                    <div className="settings-row">
+                        <span className="settings-label">Email</span>
+                        <span>{user.email}</span>
+                    </div>
 
-                <div className="settings-row">
-                    <span className="settings-label">Role</span>
-                    <span>{user.role}</span>
+                    <div className="settings-row">
+                        <span className="settings-label">Role</span>
+                        <span>{user.role}</span>
+                    </div>
                 </div>
             </div>
         </div>
