@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
-import "../styles/CreateLead.css";
+import "../styles/Createlead.css";
 
 function EditLead() {
     const [salesAgents, setSalesAgents] = useState([]);

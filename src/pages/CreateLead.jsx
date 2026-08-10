@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
-import "../styles/CreateLead.css";
+import "../styles/Createlead.css";
 
 const NAME_REGEX = /^[A-Za-z\s]{2,50}$/;
 const PHONE_REGEX = /^[0-9]{10}$/;
