@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
     const [dashboardData, setDashboardData] = useState(null);
+    const navigate = useNavigate();
 
     const getDashboardData = async () => {
         try {
@@ -18,7 +20,6 @@ function Dashboard() {
                 }
             );
 
-            console.log(response.data);
             setDashboardData(response.data);
 
         } catch (error) {
@@ -82,6 +83,74 @@ function Dashboard() {
                         <p>High Priority</p>
                         <h2>{dashboardData.highPriorityLeads}</h2>
                     </div>
+                </div>
+
+            </div>
+
+            <div className="dashboard-lower">
+
+                <div className="dashboard-section">
+                    <div className="section-header">
+                        <h2>Lead Status</h2>
+                    </div>
+
+                    <ul className="status-list">
+                        <li>
+                            <span>New</span>
+                            <strong>{dashboardData.newLeads}</strong>
+                        </li>
+                        <li>
+                            <span>Contacted</span>
+                            <strong>{dashboardData.contactedLeads}</strong>
+                        </li>
+                        <li>
+                            <span>Qualified</span>
+                            <strong>{dashboardData.qualifiedLeads}</strong>
+                        </li>
+                    </ul>
+
+                    <div className="quick-filters">
+                        <span className="quick-filters-label">Quick Filters:</span>
+                        <button onClick={() => navigate("/leads?status=New")}>
+                            New
+                        </button>
+                        <button onClick={() => navigate("/leads?status=Contacted")}>
+                            Contacted
+                        </button>
+                    </div>
+
+                    <button
+                        className="add-lead-button"
+                        onClick={() => navigate("/leads/new")}
+                    >
+                        + Add New Lead
+                    </button>
+                </div>
+
+                <div className="dashboard-section">
+                    <div className="section-header">
+                        <h2>Recent Leads</h2>
+                    </div>
+
+                    <ul className="recent-leads-list">
+                        {dashboardData.recentLeads.length === 0 && (
+                            <li className="recent-leads-empty">No leads yet</li>
+                        )}
+
+                        {dashboardData.recentLeads.map((lead) => (
+                            <li
+                                key={lead._id}
+                                onClick={() => navigate(`/leads/${lead._id}`)}
+                            >
+                                <span>{lead.name}</span>
+                                <span
+                                    className={`status-badge status-${lead.status.replace(/\s+/g, "")}`}
+                                >
+                                    {lead.status}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
             </div>

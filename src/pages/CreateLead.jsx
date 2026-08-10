@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import "../styles/CreateLead.css";
+
+const NAME_REGEX = /^[A-Za-z\s]{2,50}$/;
+const PHONE_REGEX = /^[0-9]{10}$/;
 
 function CreateLead() {
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-
-        setFormData({
-            ...formData,
-            [name]: value
-        })
-    }
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -19,36 +16,73 @@ function CreateLead() {
         status: "New",
         priority: "Medium",
         salesAgent: "",
-        source: ""
-    })
+        source: "",
+        tags: "",
+        timeToClose: ""
+    });
+
+    const [error, setError] = useState("");
+    const [salesAgents, setSalesAgents] = useState([]);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setError("");
+
+        if (!NAME_REGEX.test(formData.name.trim())) {
+            setError("Name must be 2-50 letters (no numbers or symbols).");
+            return;
+        }
+
+        if (!PHONE_REGEX.test(formData.phone.trim())) {
+            setError("Phone number must be exactly 10 digits.");
+            return;
+        }
+
         try {
-            const token = localStorage.getItem("token")
+            const token = localStorage.getItem("token");
+
+            const payload = {
+                ...formData,
+                tags: formData.tags
+                    .split(",")
+                    .map((tag) => tag.trim())
+                    .filter(Boolean),
+                timeToClose: formData.timeToClose
+                    ? Number(formData.timeToClose)
+                    : undefined
+            };
 
             await api.post(
                 "/api/leads",
-                formData,
+                payload,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 }
-            )
+            );
 
-            navigate("/leads")
-        } catch (error) {
-            console.error(error)
+            navigate("/leads");
+        } catch (err) {
+            console.error(err);
+            setError(
+                err.response?.data?.message ||
+                "Failed to create lead. Please try again."
+            );
         }
-    }
-
-    const navigate = useNavigate()
-    const [salesAgents, setSalesAgents] = useState([])
+    };
 
     useEffect(() => {
-
         async function fetchSalesAgents() {
             try {
                 const token = localStorage.getItem("token");
@@ -70,117 +104,160 @@ function CreateLead() {
         }
 
         fetchSalesAgents();
-
     }, []);
 
-
     return (
-        <>
-            <h1>Create Lead</h1>
-            
-            <form onSubmit={handleSubmit}>
-                <div>
-                <label>Name: </label>
-                <input
-                 type="text"
-                 name="name"
-                 value={formData.name}
-                 onChange={handleChange}
-                 required
-                />
+        <div className="create-lead-page">
+
+            <div className="create-lead-card">
+
+                <div className="create-lead-header">
+                    <h1>Create Lead</h1>
+                    <p>Add a new lead to the pipeline</p>
                 </div>
 
-                <div>
-                <label>Email: </label>
-                <input 
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                />
-                </div>
+                <form onSubmit={handleSubmit}>
 
-                <div>
-                <label>Phone: </label>
-                <input 
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required />
-                </div>
-                <div>
-                <label>Status: </label>
-    <select
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
-        required
-    >
-        <option value="New">New</option>
-        <option value="Contacted">Contacted</option>
-        <option value="Qualified">Qualified</option>
-        <option value="Proposal Sent">Proposal Sent</option>
-        <option value="Closed">Closed</option>
-    </select>
-    </div>
+                    <div className="form-group">
+                        <label>Name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Enter lead name"
+                            required
+                        />
+                    </div>
 
-    <div>
-    <label>Priority: </label>
-    <select
-        name="priority"
-        value={formData.priority}
-        onChange={handleChange}
-    >
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-    </select>
-    </div>
-    <div>
-    <label>Sales Agent</label>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Enter email address"
+                            required
+                        />
+                    </div>
 
-<select
-    name="salesAgent"
-    value={formData.salesAgent}
-    onChange={handleChange}
-    required
->
-    <option value="">Select Sales Agent</option>
+                    <div className="form-group">
+                        <label>Phone</label>
+                        <input
+                            type="text"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="10-digit phone number"
+                            required
+                        />
+                    </div>
 
-    {salesAgents.map((agent) => (
-        <option key={agent._id} value={agent._id}>
-            {agent.name} - {agent.email}
-        </option>
-    ))}
-</select>
-</div>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Status</label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="New">New</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Qualified">Qualified</option>
+                                <option value="Proposal Sent">Proposal Sent</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
 
+                        <div className="form-group">
+                            <label>Priority</label>
+                            <select
+                                name="priority"
+                                value={formData.priority}
+                                onChange={handleChange}
+                            >
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                    </div>
 
-<div>
-    <label>Source: </label>
-    <select
-        name="source"
-        value={formData.source}
-        onChange={handleChange}
-        required
-    >
-        <option value="">Select Source</option>
-        <option value="Website">Website</option>
-        <option value="LinkedIn">LinkedIn</option>
-        <option value="Instagram">Instagram</option>
-        <option value="Referral">Referral</option>
-    </select>
-    </div>
+                    <div className="form-group">
+                        <label>Sales Agent</label>
+                        <select
+                            name="salesAgent"
+                            value={formData.salesAgent}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Sales Agent</option>
 
-    <button type="submit" >
-                Create Lead
-            </button>
-            </form>
-            
-        </>
-    )
+                            {salesAgents.map((agent) => (
+                                <option key={agent._id} value={agent._id}>
+                                    {agent.name} - {agent.email}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Source</label>
+                        <select
+                            name="source"
+                            value={formData.source}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Source</option>
+                            <option value="Website">Website</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Referral">Referral</option>
+                        </select>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Tags</label>
+                            <input
+                                type="text"
+                                name="tags"
+                                value={formData.tags}
+                                onChange={handleChange}
+                                placeholder="e.g. High Value, Follow-up"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Time to Close (days)</label>
+                            <input
+                                type="number"
+                                name="timeToClose"
+                                value={formData.timeToClose}
+                                onChange={handleChange}
+                                min="0"
+                                placeholder="e.g. 30"
+                            />
+                        </div>
+                    </div>
+
+                    {error && (
+                        <p className="create-lead-error">{error}</p>
+                    )}
+
+                    <button type="submit" className="create-lead-button">
+                        Create Lead
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    );
 }
 
-export default CreateLead
+export default CreateLead;

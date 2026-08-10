@@ -11,6 +11,8 @@ import LeadDetails from "./pages/LeadDetails";
 import EditLead from "./pages/EditLead";
 import Reports from "./pages/Reports"
 import Settings from "./pages/Settings"
+import CreateAgent from "./pages/CreateAgent"
+import AdminRoute from "./components/AdminRoute"
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
 
 
           <Route path="/sales-agents" element={<SalesAgents/>}/> 
+
+          <Route path="/sales-agents/new" element={<AdminRoute><CreateAgent/></AdminRoute>}/>
 
           <Route path="/leads/:id/edit"
           element={<EditLead/>} />

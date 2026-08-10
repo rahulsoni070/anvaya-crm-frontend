@@ -1,10 +1,12 @@
 .main-content {
     margin-left: 0;
+    margin-top: 70px;
     min-height: calc(100vh - 70px);
     transition: margin-left 0.3s ease;
 }
-
-
+ 
+ 
 .main-content.sidebar-open {
     margin-left: 230px;
 }
+ 

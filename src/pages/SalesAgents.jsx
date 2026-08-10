@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 
 function SalesAgents() {
     const [agents, setAgents] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchAgents() {
@@ -27,6 +29,10 @@ function SalesAgents() {
     return (
         <div className="page">
             <h1>Sales Agents</h1>
+
+            <button onClick={() => navigate("/sales-agents/new")}>
+                + Add Sales Agent
+            </button>
 
             <table>
                 <thead>
