@@ -38,8 +38,6 @@ function Leads() {
         fetchSalesAgents();
     }, []);
 
-    // Keep the URL query string in sync with the current filters so
-    // they survive a refresh and can be shared/bookmarked as a link.
     useEffect(() => {
         const params = {};
 
@@ -161,6 +159,8 @@ function Leads() {
                     <option value="createdAt">Oldest First</option>
                     <option value="name">Name A-Z</option>
                     <option value="-name">Name Z-A</option>
+                    <option value="priority">Priority (Low-High)</option>
+                    <option value="-priority">Priority (High-Low)</option>
                     <option value="timeToClose">Time to Close (soonest)</option>
                     <option value="-timeToClose">Time to Close (furthest)</option>
                 </select>
