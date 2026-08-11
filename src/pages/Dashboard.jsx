@@ -111,10 +111,10 @@ function Dashboard() {
 
                     <div className="quick-filters">
                         <span className="quick-filters-label">Quick Filters:</span>
-                        <button onClick={() => navigate("/leads?status=New")}>
+                        <button onClick={() => navigate("/leads/status/New")}>
                             New
                         </button>
-                        <button onClick={() => navigate("/leads?status=Contacted")}>
+                        <button onClick={() => navigate("/leads/status/Contacted")}>
                             Contacted
                         </button>
                     </div>

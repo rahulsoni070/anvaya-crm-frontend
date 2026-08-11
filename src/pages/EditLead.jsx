@@ -1,25 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
-import "../styles/Createlead.css";
-
-const PHONE_REGEX = /^[0-9]{10}$/;
+import "../styles/CreateLead.css";
 
 function EditLead() {
     const [salesAgents, setSalesAgents] = useState([]);
-    const [error, setError] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-
-        if (name === "phone") {
-            const digitsOnly = value.replace(/\D/g, "");
-            setFormData({
-                ...formData,
-                phone: digitsOnly
-            });
-            return;
-        }
 
         setFormData({
             ...formData,
@@ -36,7 +24,9 @@ function EditLead() {
         status: "",
         priority: "",
         salesAgent: "",
-        source: ""
+        source: "",
+        tags: "",
+        timeToClose: ""
     });
 
     useEffect(() => {
@@ -60,7 +50,9 @@ function EditLead() {
                     status: response.data.status,
                     priority: response.data.priority,
                     salesAgent: response.data.salesAgent?._id || "",
-                    source: response.data.source || ""
+                    source: response.data.source || "",
+                    tags: response.data.tags ? response.data.tags.join(", ") : "",
+                    timeToClose: response.data.timeToClose || ""
                 });
 
             } catch (error) {
@@ -101,19 +93,23 @@ function EditLead() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        setError("");
-
-        if (!PHONE_REGEX.test(formData.phone.trim())) {
-            setError("Phone number must be exactly 10 digits.");
-            return;
-        }
-
         try {
             const token = localStorage.getItem("token");
 
+            const payload = {
+                ...formData,
+                tags: formData.tags
+                    .split(",")
+                    .map((tag) => tag.trim())
+                    .filter(Boolean),
+                timeToClose: formData.timeToClose
+                    ? Number(formData.timeToClose)
+                    : undefined
+            };
+
             await api.put(
                 `/api/leads/${id}`,
-                formData,
+                payload,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -125,10 +121,6 @@ function EditLead() {
 
         } catch (error) {
             console.error(error);
-            setError(
-                error.response?.data?.message ||
-                "Failed to update lead. Please try again."
-            );
         }
     };
 
@@ -173,7 +165,6 @@ function EditLead() {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            placeholder="10-digit phone number"
                             required
                         />
                     </div>
@@ -247,9 +238,30 @@ function EditLead() {
                         </select>
                     </div>
 
-                    {error && (
-                        <p className="create-lead-error">{error}</p>
-                    )}
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Tags</label>
+                            <input
+                                type="text"
+                                name="tags"
+                                value={formData.tags}
+                                onChange={handleChange}
+                                placeholder="e.g. High Value, Follow-up"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Time to Close (days)</label>
+                            <input
+                                type="number"
+                                name="timeToClose"
+                                value={formData.timeToClose}
+                                onChange={handleChange}
+                                min="0"
+                                placeholder="e.g. 30"
+                            />
+                        </div>
+                    </div>
 
                     <button type="submit" className="create-lead-button">
                         Update Lead

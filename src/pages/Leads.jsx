@@ -9,23 +9,50 @@ function Leads() {
     const [search, setSearch] = useState(searchParams.get("search") || "");
     const [status, setStatus] = useState(searchParams.get("status") || "");
     const [priority, setPriority] = useState(searchParams.get("priority") || "");
+    const [salesAgent, setSalesAgent] = useState(searchParams.get("salesAgent") || "");
+    const [tags, setTags] = useState(searchParams.get("tags") || "");
     const [sort, setSort] = useState(searchParams.get("sort") || "-createdAt");
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
     const [totalPages, setTotalPages] = useState(1);
     const [leads, setLeads] = useState([]);
-    
+    const [salesAgents, setSalesAgents] = useState([]);
+
+    useEffect(() => {
+        async function fetchSalesAgents() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await api.get("/api/agents", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                setSalesAgents(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchSalesAgents();
+    }, []);
+
+    // Keep the URL query string in sync with the current filters so
+    // they survive a refresh and can be shared/bookmarked as a link.
     useEffect(() => {
         const params = {};
 
         if (search) params.search = search;
         if (status) params.status = status;
         if (priority) params.priority = priority;
+        if (salesAgent) params.salesAgent = salesAgent;
+        if (tags) params.tags = tags;
         if (sort !== "-createdAt") params.sort = sort;
         if (page !== 1) params.page = page;
 
         setSearchParams(params, { replace: true });
-    }, [search, status, priority, sort, page]);
+    }, [search, status, priority, salesAgent, tags, sort, page]);
 
     useEffect(() => {
         async function fetchLeads() {
@@ -33,7 +60,7 @@ function Leads() {
                 const token = localStorage.getItem("token");
 
                 const response = await api.get(
-                    `/api/leads?search=${search}&status=${status}&priority=${priority}&sort=${sort}&page=${page}`,
+                    `/api/leads?search=${search}&status=${status}&priority=${priority}&salesAgent=${salesAgent}&tags=${tags}&sort=${sort}&page=${page}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -49,7 +76,7 @@ function Leads() {
         }
 
         fetchLeads();
-    }, [search, status, priority, sort, page]);
+    }, [search, status, priority, salesAgent, tags, sort, page]);
 
     return (
         <>
@@ -99,6 +126,31 @@ function Leads() {
                 </select>
 
                 <select
+                    value={salesAgent}
+                    onChange={(event) => {
+                        setSalesAgent(event.target.value);
+                        setPage(1);
+                    }}
+                >
+                    <option value="">All Sales Agents</option>
+                    {salesAgents.map((agent) => (
+                        <option key={agent._id} value={agent._id}>
+                            {agent.name}
+                        </option>
+                    ))}
+                </select>
+
+                <input
+                    type="text"
+                    placeholder="Filter by tag..."
+                    value={tags}
+                    onChange={(event) => {
+                        setTags(event.target.value);
+                        setPage(1);
+                    }}
+                />
+
+                <select
                     value={sort}
                     onChange={(event) => {
                         setSort(event.target.value);
@@ -109,6 +161,8 @@ function Leads() {
                     <option value="createdAt">Oldest First</option>
                     <option value="name">Name A-Z</option>
                     <option value="-name">Name Z-A</option>
+                    <option value="timeToClose">Time to Close (soonest)</option>
+                    <option value="-timeToClose">Time to Close (furthest)</option>
                 </select>
 
                 <table>

@@ -46,7 +46,12 @@ function SalesAgents() {
                 <tbody>
                     {agents.map((agent) => (
                         <tr key={agent._id}>
-                            <td>{agent.name}</td>
+                            <td
+                                onClick={() => navigate(`/sales-agents/${agent._id}/leads`)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                {agent.name}
+                            </td>
                             <td>{agent.email}</td>
                             <td>{agent.assignedLeads}</td>
                         </tr>

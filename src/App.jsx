@@ -13,6 +13,8 @@ import Reports from "./pages/Reports"
 import Settings from "./pages/Settings"
 import CreateAgent from "./pages/CreateAgent"
 import AdminRoute from "./components/AdminRoute"
+import LeadStatusView from "./pages/LeadStatusView"
+import SalesAgentLeadsView from "./pages/SalesAgentLeadsView"
 
 function App() {
   return (
@@ -47,6 +49,10 @@ function App() {
           <Route path="/reports" element={<Reports/>} />
 
           <Route path="/settings" element={<Settings/>} />
+
+          <Route path="/leads/status/:status" element={<LeadStatusView/>} />
+
+          <Route path="/sales-agents/:id/leads" element={<SalesAgentLeadsView/>} />
 
           </Route>
 

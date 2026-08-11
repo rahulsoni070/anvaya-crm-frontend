@@ -158,6 +158,22 @@ function LeadDetails() {
                         </span>
                     </div>
 
+                    <div className="lead-detail-item">
+                        <strong>Time to Close</strong>
+                        <span>
+                            {lead.timeToClose ? `${lead.timeToClose} Days` : "N/A"}
+                        </span>
+                    </div>
+
+                    <div className="lead-detail-item">
+                        <strong>Tags</strong>
+                        <span>
+                            {lead.tags && lead.tags.length > 0
+                                ? lead.tags.join(", ")
+                                : "N/A"}
+                        </span>
+                    </div>
+
                 </div>
 
          
