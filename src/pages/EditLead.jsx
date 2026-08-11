@@ -1,10 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
+import TagsMultiSelect from "../components/TagsMultiSelect";
 import "../styles/Createlead.css";
 
 function EditLead() {
     const [salesAgents, setSalesAgents] = useState([]);
+    const [availableTags, setAvailableTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -13,6 +16,24 @@ function EditLead() {
             ...formData,
             [name]: value
         });
+    };
+
+    const toggleTag = (tag) => {
+        setSelectedTags((prev) =>
+            prev.includes(tag)
+                ? prev.filter((t) => t !== tag)
+                : [...prev, tag]
+        );
+    };
+
+    const handleAddNewTag = (trimmed) => {
+        if (!selectedTags.includes(trimmed)) {
+            setSelectedTags([...selectedTags, trimmed]);
+        }
+
+        if (!availableTags.includes(trimmed)) {
+            setAvailableTags([...availableTags, trimmed]);
+        }
     };
 
     const { id } = useParams();
@@ -25,7 +46,6 @@ function EditLead() {
         priority: "",
         salesAgent: "",
         source: "",
-        tags: "",
         timeToClose: ""
     });
 
@@ -51,9 +71,10 @@ function EditLead() {
                     priority: response.data.priority,
                     salesAgent: response.data.salesAgent?._id || "",
                     source: response.data.source || "",
-                    tags: response.data.tags ? response.data.tags.join(", ") : "",
                     timeToClose: response.data.timeToClose || ""
                 });
+
+                setSelectedTags(response.data.tags || []);
 
             } catch (error) {
                 console.error(error);
@@ -90,6 +111,30 @@ function EditLead() {
 
     }, []);
 
+    useEffect(() => {
+        async function fetchTags() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await api.get(
+                    "/api/leads/tags/all",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                setAvailableTags(response.data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchTags();
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -98,10 +143,7 @@ function EditLead() {
 
             const payload = {
                 ...formData,
-                tags: formData.tags
-                    .split(",")
-                    .map((tag) => tag.trim())
-                    .filter(Boolean),
+                tags: selectedTags,
                 timeToClose: formData.timeToClose
                     ? Number(formData.timeToClose)
                     : undefined
@@ -241,12 +283,12 @@ function EditLead() {
                     <div className="form-row">
                         <div className="form-group">
                             <label>Tags</label>
-                            <input
-                                type="text"
-                                name="tags"
-                                value={formData.tags}
-                                onChange={handleChange}
-                                placeholder="e.g. High Value, Follow-up"
+
+                            <TagsMultiSelect
+                                availableTags={availableTags}
+                                selectedTags={selectedTags}
+                                onToggleTag={toggleTag}
+                                onAddTag={handleAddNewTag}
                             />
                         </div>
 

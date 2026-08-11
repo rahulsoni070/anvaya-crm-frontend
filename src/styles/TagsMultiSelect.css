@@ -1,0 +1,122 @@
+.tags-multiselect {
+    position: relative;
+}
+
+.tags-multiselect-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    color: #111827;
+    cursor: pointer;
+    text-align: left;
+}
+
+.tags-multiselect-trigger:hover {
+    border-color: #9ca3af;
+}
+
+.tags-multiselect-trigger-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #374151;
+}
+
+.tags-multiselect-arrow {
+    color: #6b7280;
+    font-size: 11px;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.tags-multiselect-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+    padding: 8px;
+}
+
+.tags-multiselect-options {
+    max-height: 160px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.tags-multiselect-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.tags-multiselect-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0;
+    accent-color: #4f46e5;
+}
+
+.tags-multiselect-option:hover {
+    background: #f3f4f6;
+}
+
+.tags-multiselect-empty {
+    font-size: 13px;
+    color: #9ca3af;
+    padding: 6px 8px;
+    margin: 0;
+}
+
+.tags-multiselect-add {
+    display: flex;
+    gap: 6px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 6px;
+    padding-top: 12px;
+}
+
+.tags-multiselect-add input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.tags-multiselect-add button {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tags-multiselect-add button:hover {
+    background: #4338ca;
+}

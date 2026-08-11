@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
-import "../styles/Createlead.css";
+import TagsMultiSelect from "../components/TagsMultiSelect";
+import "../styles/CreateLead.css";
 
 const NAME_REGEX = /^[A-Za-z\s]{2,50}$/;
 const PHONE_REGEX = /^[0-9]{10}$/;
@@ -24,7 +25,6 @@ function CreateLead() {
     const [salesAgents, setSalesAgents] = useState([]);
     const [availableTags, setAvailableTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
-    const [newTagInput, setNewTagInput] = useState("");
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -52,18 +52,14 @@ function CreateLead() {
         );
     };
 
-    const handleAddNewTag = () => {
-        const trimmed = newTagInput.trim();
-
-        if (trimmed && !selectedTags.includes(trimmed)) {
+    const handleAddNewTag = (trimmed) => {
+        if (!selectedTags.includes(trimmed)) {
             setSelectedTags([...selectedTags, trimmed]);
         }
 
-        if (trimmed && !availableTags.includes(trimmed)) {
+        if (!availableTags.includes(trimmed)) {
             setAvailableTags([...availableTags, trimmed]);
         }
-
-        setNewTagInput("");
     };
 
     const handleSubmit = async (event) => {
@@ -277,30 +273,12 @@ function CreateLead() {
                         <div className="form-group">
                             <label>Tags</label>
 
-                            <div className="tag-options">
-                                {availableTags.map((tag) => (
-                                    <label key={tag} className="tag-checkbox">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedTags.includes(tag)}
-                                            onChange={() => toggleTag(tag)}
-                                        />
-                                        {tag}
-                                    </label>
-                                ))}
-                            </div>
-
-                            <div className="tag-add-new">
-                                <input
-                                    type="text"
-                                    value={newTagInput}
-                                    onChange={(e) => setNewTagInput(e.target.value)}
-                                    placeholder="Add a new tag"
-                                />
-                                <button type="button" onClick={handleAddNewTag}>
-                                    Add
-                                </button>
-                            </div>
+                            <TagsMultiSelect
+                                availableTags={availableTags}
+                                selectedTags={selectedTags}
+                                onToggleTag={toggleTag}
+                                onAddTag={handleAddNewTag}
+                            />
                         </div>
 
                         <div className="form-group">

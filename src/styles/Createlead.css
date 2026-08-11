@@ -52,7 +52,7 @@
     color: #374151;
 }
 
-.create-lead-card input,
+.create-lead-card input:not([type="checkbox"]),
 .create-lead-card select {
     width: 100%;
     padding: 10px 12px;
@@ -91,59 +91,6 @@
     background: #4338ca;
 }
 
-.tag-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.tag-checkbox {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    width: auto;
-    padding: 6px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #374151;
-    cursor: pointer;
-}
-
-.tag-checkbox input[type="checkbox"] {
-    width: 14px;
-    height: 14px;
-    margin: 0;
-    accent-color: #4f46e5;
-}
-
-.tag-add-new {
-    display: flex;
-    gap: 8px;
-}
-
-.tag-add-new input {
-    flex: 1;
-}
-
-.tag-add-new button {
-    background: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.tag-add-new button:hover {
-    background: #4338ca;
-}
-
 @media (max-width: 600px) {
     .create-lead-page {
         padding: 16px;
@@ -157,4 +104,3 @@
         grid-template-columns: 1fr;
     }
 }
-
